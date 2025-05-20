@@ -6,6 +6,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
 from django import forms
 from django.contrib.auth.models import User
+from myapp.models import Company
 
 # Create your views here.
 def index(request):
@@ -70,5 +71,21 @@ def login_view(request):
     return render(request, 'login.html')
 
 def home_view(request):
-    return render(request,'index.html')
+    companies=Company.objects.all()
+    return render(request,'index.html',{'companies':companies})
 
+def register_company(request):
+     if request.method == 'POST':
+         company_name=request.POST['name']
+         company_address=request.POST['address']
+         company_email=request.POST['email']
+         company_gstin=request.POST['gstin']
+         Company.objects.create(name=company_name,address=company_address,email=company_email,gstin=company_gstin)
+         return redirect('home')
+        
+     return render(request,'index.html')
+def delete_company(request,id):
+     Company.objects.get(id=id).delete()
+     return redirect('home')
+def update_company(request):
+     return render(request,'index.html')
